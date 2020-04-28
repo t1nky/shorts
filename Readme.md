@@ -13,6 +13,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installing
 
+Run commands in the root directory of the project
+
 Initialize database:
 
 `make build_db`
