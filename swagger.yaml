@@ -1,0 +1,376 @@
+basePath: /v1
+consumes:
+- application/json
+definitions:
+  ResponseError:
+    description: 'ResponseError : response with error'
+    properties:
+      error:
+        type: string
+        x-go-name: Error
+      result:
+        type: string
+        x-go-name: Result
+    type: object
+    x-go-package: shorts/helper
+  ResponseOK:
+    description: 'ResponseOK : response without data or error fields'
+    properties:
+      result:
+        type: string
+        x-go-name: Result
+    type: object
+    x-go-package: shorts/helper
+  Shortlink:
+    description: Shortlink structure
+    properties:
+      full:
+        type: string
+        x-go-name: Full
+      id:
+        format: uint64
+        type: integer
+        x-go-name: ID
+      ownerId:
+        format: uint64
+        type: integer
+        x-go-name: OwnerID
+      short:
+        type: string
+        x-go-name: Short
+      uses:
+        items:
+          $ref: '#/definitions/ShortlinkUse'
+        type: array
+        x-go-name: Uses
+    type: object
+    x-go-package: shorts/models
+  ShortlinkResponse:
+    description: ShortlinkResponse structure
+    properties:
+      data:
+        $ref: '#/definitions/ShortlinkResponseData'
+      result:
+        type: string
+        x-go-name: Result
+    type: object
+    x-go-package: shorts/models
+  ShortlinkResponseData:
+    description: ShortlinkResponseData structure
+    properties:
+      full:
+        type: string
+        x-go-name: Full
+      id:
+        format: uint64
+        type: integer
+        x-go-name: ID
+      short:
+        type: string
+        x-go-name: Short
+    type: object
+    x-go-package: shorts/models
+  ShortlinkUse:
+    description: ShortlinkUse structure
+    properties:
+      time:
+        format: date-time
+        type: string
+        x-go-name: UseTime
+    type: object
+    x-go-package: shorts/models
+  ShortlinksResponse:
+    description: ShortlinksResponse structure
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/ShortlinkResponseData'
+        type: array
+        x-go-name: Data
+      result:
+        type: string
+        x-go-name: Result
+    type: object
+    x-go-package: shorts/models
+  TopDomainsResponse:
+    description: TopDomainsResponse structure
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/TopDomainsResponseData'
+        type: array
+        x-go-name: Data
+      result:
+        type: string
+        x-go-name: Result
+    type: object
+    x-go-package: shorts/models
+  TopDomainsResponseData:
+    description: TopDomainsResponse structure
+    properties:
+      usesCount:
+        format: uint64
+        type: integer
+        x-go-name: UsesCount
+      website:
+        type: string
+        x-go-name: Website
+    type: object
+    x-go-package: shorts/models
+  UserResponse:
+    description: UserResponse contains information about user
+    properties:
+      data:
+        $ref: '#/definitions/UserResponseData'
+      result:
+        type: string
+        x-go-name: Result
+    type: object
+    x-go-package: shorts/models
+  UserResponseData:
+    description: UserResponseData contains information about user
+    properties:
+      id:
+        format: uint64
+        type: integer
+        x-go-name: ID
+      name:
+        type: string
+        x-go-name: Name
+    type: object
+    x-go-package: shorts/models
+info:
+  description: Documentation for Shorts API
+  title: Shorts API
+  version: 1.0.0
+paths:
+  /logout:
+    get:
+      description: Log out current user
+      operationId: logout
+      responses:
+        "401":
+          $ref: '#/responses/ResponseError'
+      security:
+      - basic: []
+      tags:
+      - user
+  /me:
+    get:
+      description: Return currently authenticated user's information
+      operationId: getCurrentUser
+      responses:
+        "200":
+          $ref: '#/responses/UserResponse'
+        "400":
+          $ref: '#/responses/ResponseError'
+        "401":
+          $ref: '#/responses/ResponseError'
+      security:
+      - basic: []
+      tags:
+      - user
+  /s/{short}:
+    get:
+      description: Redirect to a full link by a given short link
+      operationId: redirectByShortlink
+      parameters:
+      - in: path
+        name: short
+        required: true
+        type: string
+        x-go-name: Short
+      responses:
+        "301":
+          $ref: '#/responses/RedirectResponse'
+        "400":
+          $ref: '#/responses/ResponseError'
+      tags:
+      - shortlink
+  /short/{id}:
+    get:
+      description: Return information about specific short link that was created by
+        currently authenticated user
+      operationId: getShortlink
+      parameters:
+      - format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          $ref: '#/responses/ShortlinkResponse'
+        "400":
+          $ref: '#/responses/ResponseError'
+        "401":
+          $ref: '#/responses/ResponseError'
+        "404":
+          $ref: '#/responses/ResponseError'
+      security:
+      - basic: []
+      tags:
+      - shortlink
+  /shorts:
+    delete:
+      description: Delete specific short link that was created by currently authenticated
+        user
+      operationId: deleteShortlink
+      parameters:
+      - format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "200":
+          $ref: '#/responses/ResponseOK'
+        "400":
+          $ref: '#/responses/ResponseError'
+        "401":
+          $ref: '#/responses/ResponseError'
+        "404":
+          $ref: '#/responses/ResponseError'
+      security:
+      - basic: []
+      tags:
+      - shortlink
+    get:
+      description: Return list of short links created by currently authenticated user
+      operationId: getShortlinks
+      responses:
+        "200":
+          $ref: '#/responses/ShortlinksResponse'
+        "400":
+          $ref: '#/responses/ResponseError'
+        "401":
+          $ref: '#/responses/ResponseError'
+      security:
+      - basic: []
+      tags:
+      - shortlink
+    post:
+      description: Create a new short link
+      operationId: addShortlink
+      responses:
+        "201":
+          $ref: '#/responses/AddShortResponse'
+        "400":
+          $ref: '#/responses/ResponseError'
+        "401":
+          $ref: '#/responses/ResponseError'
+      security:
+      - basic: []
+      tags:
+      - shortlink
+  /stats/graph:
+    get:
+      description: Return amount of redirects groupped by day, hour and minute
+      operationId: getShortlinksGraph
+      responses:
+        "200":
+          $ref: '#/responses/ShortlinksGraphResponse'
+        "400":
+          $ref: '#/responses/ResponseError'
+      tags:
+      - stats
+  /stats/top:
+    get:
+      description: Return top 20 websites that were most often redirected to
+      operationId: getShortlinksTop
+      responses:
+        "200":
+          $ref: '#/responses/TopDomainsResponse'
+        "400":
+          $ref: '#/responses/ResponseError'
+      tags:
+      - stats
+  /users:
+    post:
+      description: Create a new user
+      operationId: addUser
+      responses:
+        "201":
+          $ref: '#/responses/ResponseOK'
+        "400":
+          $ref: '#/responses/ResponseError'
+      tags:
+      - user
+produces:
+- application/json
+responses:
+  AddShortResponse:
+    description: Information about a new short link
+    schema:
+      $ref: '#/definitions/ShortlinkResponse'
+  RedirectResponse:
+    description: Redirect path returns in the Location header
+    headers:
+      Location:
+        description: Full link
+        type: string
+  ResponseError:
+    description: '"result": "error" and error text returns in the response'
+    schema:
+      $ref: '#/definitions/ResponseError'
+  ResponseOK:
+    description: '"result": "ok" returns in the response'
+    schema:
+      $ref: '#/definitions/ResponseOK'
+  ShortlinkResponse:
+    description: Information about a short link
+    schema:
+      properties:
+        data:
+          $ref: '#/definitions/Shortlink'
+        result:
+          type: string
+          x-go-name: Result
+      type: object
+  ShortlinksGraphResponse:
+    description: 'Information about uses in following format: "result": { "Day1":
+      { Hour1: { Minute1: uses, Minute2: uses, ... } } }'
+    schema:
+      properties:
+        data:
+          additionalProperties:
+            type: object
+          description: No idea how to make it generate proper example/schema with
+            nested map types
+          type: object
+          x-go-name: Data
+        result:
+          type: string
+          x-go-name: Result
+      type: object
+  ShortlinksResponse:
+    description: List of short links
+    schema:
+      $ref: '#/definitions/ShortlinksResponse'
+  TopDomainsResponse:
+    description: List of top domains (up to 20)
+    schema:
+      properties:
+        data:
+          items:
+            $ref: '#/definitions/TopDomainsResponse'
+          maximum: 20
+          minimum: 1
+          type: array
+          x-go-name: Data
+        result:
+          type: string
+          x-go-name: Result
+      type: object
+  UserResponse:
+    description: Information about a user
+    schema:
+      $ref: '#/definitions/UserResponse'
+schemes:
+- http
+securityDefinitions:
+  basic:
+    type: basic
+swagger: "2.0"
