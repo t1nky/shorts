@@ -8,7 +8,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
- [Go](https://golang.org/ "Go") and [Docker](https://www.docker.com/ "Docker")
+ [Make](https://en.wikipedia.org/wiki/Make_(software) "Make"), [Go](https://golang.org/ "Go") and [Docker](https://www.docker.com/ "Docker")
 
 
 ### Installing
