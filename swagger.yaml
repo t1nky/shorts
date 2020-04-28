@@ -254,6 +254,15 @@ paths:
     post:
       description: Create a new short link
       operationId: addShortlink
+      parameters:
+      - in: query
+        name: short
+        type: string
+        x-go-name: Short
+      - in: query
+        name: full
+        type: string
+        x-go-name: Full
       responses:
         "201":
           $ref: '#/responses/AddShortResponse'
@@ -291,6 +300,15 @@ paths:
     post:
       description: Create a new user
       operationId: addUser
+      parameters:
+      - in: query
+        name: name
+        type: string
+        x-go-name: Name
+      - in: query
+        name: password
+        type: string
+        x-go-name: Password
       responses:
         "201":
           $ref: '#/responses/ResponseOK'

@@ -21,3 +21,10 @@ func (s *Shortlink) AfterCreate(tx *gorm.DB) (err error) {
 	tx.Model(s).Update("short", h.MakeShortlinkFromID(s.ID))
 	return
 }
+
+// ShortlinkAddData structure
+// swagger:parameters addShortlink
+type ShortlinkAddData struct {
+	Short string `json:"short" gorm:"unique;not null"`
+	Full  string `json:"full" gorm:"not null"`
+}

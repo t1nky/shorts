@@ -12,11 +12,16 @@ import (
 
 // AddUser : Register a new user
 func AddUser(c *gin.Context) {
-	var user models.User
+	var userData models.AddUserData
 
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, h.NewValidationError(user, err))
+	if err := c.ShouldBindJSON(&userData); err != nil {
+		c.JSON(http.StatusBadRequest, h.NewValidationError(userData, err))
 		return
+	}
+
+	user := models.User{
+		Name:     userData.Name,
+		Password: userData.Password,
 	}
 
 	if dbc := database.DB.Create(&user); dbc.Error != nil {

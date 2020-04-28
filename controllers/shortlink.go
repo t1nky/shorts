@@ -37,14 +37,14 @@ func GetShortlinks(c *gin.Context) {
 func AddShortlink(c *gin.Context) {
 	userID := c.MustGet(gin.AuthUserKey).(uint64)
 
-	var shortlink models.Shortlink
+	var shortlinkData models.ShortlinkAddData
 
-	if err := c.ShouldBindJSON(&shortlink); err != nil {
+	if err := c.ShouldBindJSON(&shortlinkData); err != nil {
 		c.JSON(http.StatusBadRequest, h.NewResponseError(err))
 		return
 	}
 
-	if parsedURL, err := url.Parse(shortlink.Full); err != nil {
+	if parsedURL, err := url.Parse(shortlinkData.Full); err != nil {
 		c.JSON(http.StatusBadRequest, h.NewResponseError(err))
 	} else {
 		if !parsedURL.IsAbs() {
@@ -52,7 +52,12 @@ func AddShortlink(c *gin.Context) {
 			return
 		}
 
-		shortlink.OwnerID = userID
+		shortlink := models.Shortlink{
+			OwnerID: userID,
+			Short:   shortlinkData.Short,
+			Full:    shortlinkData.Full,
+		}
+
 		if dbc := database.DB.Create(&shortlink); dbc.Error != nil {
 			c.JSON(http.StatusBadRequest, h.NewResponseError(dbc.Error))
 		} else {
