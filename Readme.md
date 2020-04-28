@@ -17,7 +17,7 @@ Initialize database:
 
 `make build_db`
 
-It will create database container named `shorts`, 2 databases (1 for testning and 1 for deployment)
+This will create a database container named `shorts` with 2 databases (1 for testning and 1 for deployment)
 
 To build docs, run
 
