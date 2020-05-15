@@ -60,7 +60,7 @@ func GetShortlinksGraph(c *gin.Context) {
 
 	var shortlinksUse []models.ShortlinkUse
 	if err := database.DB.Find(&shortlinksUse).Error; err != nil {
-		c.AbortWithStatus(404)
+		c.AbortWithStatus(http.StatusNotFound)
 		fmt.Println(err)
 	} else {
 		for _, shortlinkUse := range shortlinksUse {

@@ -310,7 +310,6 @@ func TestMain(t *testing.T) {
 func TestValidation(t *testing.T) {
 	const USER_NAME = "Test Test"
 	const USER_PASSWORD = "testPassword123"
-	const FULL_LINK = "https://google.com"
 
 	// Init local env
 	err := godotenv.Load(".env.test")
@@ -449,7 +448,8 @@ func TestStats(t *testing.T) {
 					}
 
 					shortlinkUse := models.ShortlinkUse{LinkID: shortlinkResponse.Data.ID, UseTime: time.Date(2020, 02, i, i, i, 02, 02, time.UTC)}
-					for use := 0; use <= rand.Intn(ADD_USES_UP_TO-1)+1; use++ {
+					usesCount := rand.Intn(ADD_USES_UP_TO-1) + 1
+					for use := 0; use <= usesCount; use++ {
 						shortlink.Uses = append(shortlink.Uses, shortlinkUse)
 
 						topDomainsExpected[websiteHost]++
